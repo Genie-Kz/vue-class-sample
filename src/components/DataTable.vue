@@ -138,7 +138,7 @@ export default class DataTable extends Vue {
                         width: 18px;
                         height: 18px;
                         border: 1px solid #000;
-                        border-radius: 3px;
+                        border-radius: 0;
                         background-color: transparent;
                         position: relative;
                         outline: none;

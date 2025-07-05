@@ -147,7 +147,7 @@ export default class ActionButton extends Vue {
 
     // 状態
     &.disabled {
-        background-color: #e0e0e0;
+        bakground-color: #e0e0e0;
         color: #9e9e9e;
         cursor: not-allowed;
         transform: none;
