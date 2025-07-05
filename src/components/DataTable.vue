@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { TableItem } from "@/types/common";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class DataTable extends Vue {
@@ -60,10 +60,11 @@ export default class DataTable extends Vue {
         .toString(36)
         .substring(2, 9)}`;
 
-    public handleSelectionChange(itemId: number): void {
+    @Emit("selection-change")
+    public handleSelectionChange(itemId: number): number | null {
         // 既に選択されているアイテムをクリックした場合は選択解除
         const newSelection = this.selectedId === itemId ? null : itemId;
-        this.$emit("selection-change", newSelection);
+        return newSelection;
     }
 }
 </script>

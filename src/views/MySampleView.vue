@@ -26,7 +26,7 @@
 import ActionButton from "@/components/ActionButton.vue";
 import DataTable from "@/components/DataTable.vue";
 import { TableItem } from "@/types/common";
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
 @Component({
     components: {
@@ -49,7 +49,8 @@ export default class MySampleView extends Vue {
         this.selectedItemId = itemId;
     }
 
-    handleConfirm(): void {
+    @Emit("item-confirmed")
+    handleConfirm(): TableItem | undefined {
         if (this.selectedItemId) {
             const selectedItem = this.tableData.find(
                 (item) => item.id === this.selectedItemId
@@ -57,8 +58,9 @@ export default class MySampleView extends Vue {
             console.log("選択されたアイテム:", selectedItem);
             // 実際のプロジェクトでは、親コンポーネントへのイベント発火や
             // Vuexでの状態管理、APIコールなどを行う
-            this.$emit("item-confirmed", selectedItem);
+            return selectedItem;
         }
+        return undefined;
     }
 }
 </script>

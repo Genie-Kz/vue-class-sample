@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { ButtonSize, ButtonVariant } from "@/types/common";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class ActionButton extends Vue {
@@ -48,9 +48,10 @@ export default class ActionButton extends Vue {
         return classes;
     }
 
+    @Emit("click")
     public handleClick(): void {
         if (!this.disabled && !this.loading) {
-            this.$emit("click");
+            return;
         }
     }
 }
