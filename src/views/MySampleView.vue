@@ -65,16 +65,15 @@ export default class MySampleView extends Vue {
 
 <style lang="scss" scoped>
 .data-selection-view {
-    border: 1px solid #ddd;
+    border: 1px solid #000;
     border-radius: 4px;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .view-header {
         background-color: #ff0000;
         color: #000;
         padding: 12px 20px;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #000;
 
         .header-title {
             margin: 0;
