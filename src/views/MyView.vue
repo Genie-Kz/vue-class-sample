@@ -6,7 +6,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class MySampleView extends Vue {
+export default class MyView extends Vue {
     public message: string = "Hello from MyView!";
 }
 </script>

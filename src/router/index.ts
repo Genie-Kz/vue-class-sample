@@ -1,4 +1,4 @@
-import MySampleView from "@/views/MyView.vue";
+import MySampleView from "@/views/MySampleView.vue";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -21,8 +21,8 @@ const routes: Array<RouteConfig> = [
             import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
     },
     {
-        path: "/my-page",
-        name: "my-page",
+        path: "/data-selection",
+        name: "data-selection",
         component: MySampleView,
     },
 ];
