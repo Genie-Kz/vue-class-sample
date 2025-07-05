@@ -1,3 +1,4 @@
+import ItemDetailView from "@/views/ItemDetailView.vue";
 import MySampleView from "@/views/MySampleView.vue";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
@@ -24,6 +25,11 @@ const routes: Array<RouteConfig> = [
         path: "/data-selection",
         name: "data-selection",
         component: MySampleView,
+    },
+    {
+        path: "/item-detail/:item",
+        name: "item-detail",
+        component: ItemDetailView,
     },
 ];
 
