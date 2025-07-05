@@ -79,7 +79,7 @@ export default class DataTable extends Vue {
         background-color: #fff;
         border: 1px solid #e0e0e0;
         border-radius: 4px;
-        overflow: hidden;
+        overflow: auto;
 
         .table-header {
             background-color: #f5f5f5;
