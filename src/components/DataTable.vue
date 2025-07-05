@@ -58,7 +58,7 @@ export default class DataTable extends Vue {
 
     private radioGroupName = `radio-group-${Math.random()
         .toString(36)
-        .substr(2, 9)}`;
+        .substring(2, 9)}`;
 
     public handleSelectionChange(itemId: number): void {
         // 既に選択されているアイテムをクリックした場合は選択解除
