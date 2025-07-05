@@ -18,12 +18,11 @@
                 >
                     <td class="checkbox-cell">
                         <input
-                            type="radio"
-                            :name="radioGroupName"
+                            type="checkbox"
                             :value="item.id"
                             :checked="selectedId === item.id"
                             @change="handleSelectionChange(item.id)"
-                            class="selection-radio"
+                            class="selection-checkbox"
                         />
                     </td>
                     <td class="name-cell">{{ item.name }}</td>
@@ -130,9 +129,38 @@ export default class DataTable extends Vue {
                 &.checkbox-cell {
                     text-align: center;
 
-                    .selection-radio {
+                    .selection-checkbox {
                         cursor: pointer;
                         transform: scale(1.2);
+                        appearance: none;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        width: 18px;
+                        height: 18px;
+                        border: 1px solid #000;
+                        border-radius: 3px;
+                        background-color: transparent;
+                        position: relative;
+                        outline: none;
+
+                        &:checked {
+                            background-color: transparent;
+                            border-color: #000;
+                        }
+
+                        &:checked::after {
+                            content: "✓";
+                            position: absolute;
+                            top: -2px;
+                            left: 2px;
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #000;
+                        }
+
+                        &:focus {
+                            box-shadow: none;
+                        }
                     }
                 }
 
