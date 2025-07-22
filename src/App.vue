@@ -5,7 +5,11 @@
         <nav>
             <router-link to="/">Home</router-link> |
             <router-link to="/about">About</router-link> |
-            <router-link to="/data-selection">データ選択</router-link>
+            <router-link to="/data-selection">データ選択</router-link> |
+            <router-link to="/management">管理画面</router-link> |
+            <router-link to="/table-pattern-switcher"
+                >テーブル切り替え</router-link
+            >
         </nav>
         <router-view />
     </div>

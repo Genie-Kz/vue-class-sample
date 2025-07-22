@@ -1,5 +1,7 @@
 import ItemDetailView from "@/views/ItemDetailView.vue";
+import ManagementScreen from "@/views/ManagementScreen.vue";
 import MySampleView from "@/views/MySampleView.vue";
+import TablePatternSwitcher from "@/views/TableView.vue";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -30,6 +32,16 @@ const routes: Array<RouteConfig> = [
         path: "/item-detail/:item",
         name: "item-detail",
         component: ItemDetailView,
+    },
+    {
+        path: "/table-pattern-switcher",
+        name: "table-pattern-switcher",
+        component: TablePatternSwitcher,
+    },
+    {
+        path: "/management",
+        name: "management",
+        component: ManagementScreen,
     },
 ];
 
