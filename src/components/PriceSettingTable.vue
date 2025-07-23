@@ -46,7 +46,7 @@
 <script lang="ts">
 import EditableTable, { TableColumn } from "@/components/EditableTable.vue";
 import { PriceInfo } from "@/types/management";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 @Component({
     components: {
@@ -56,6 +56,41 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class PriceSettingTable extends Vue {
     @Prop({ required: true }) priceInfo!: PriceInfo[];
     @Prop({ required: true }) totalAmount!: number;
+
+    // 複数引数のイベント発行メソッド（直接$emitを使用）
+    emitPriceUpdated(priceInfo: PriceInfo[], totalAmount: number) {
+        // 複数引数は$emitで直接渡すのが最も確実
+        this.$emit("price-updated", priceInfo, totalAmount);
+    }
+
+    // データ保存完了イベント
+    @Emit("data-saved")
+    emitDataSaved(message: string) {
+        return message;
+    }
+
+    // 新しい料金設定追加イベント
+    @Emit("price-added")
+    emitPriceAdded(priceInfo: PriceInfo) {
+        return priceInfo;
+    }
+
+    // 料金設定削除イベント
+    @Emit("price-deleted")
+    emitPriceDeleted(priceInfo: PriceInfo) {
+        return priceInfo;
+    }
+
+    // 計算結果更新イベント（平均、最大、最小、合計）
+    @Emit("calculation-updated")
+    emitCalculationUpdated(calculations: {
+        average: number;
+        max: number;
+        min: number;
+        total: number;
+    }) {
+        return calculations;
+    }
 
     get columns(): TableColumn[] {
         return [
@@ -194,17 +229,29 @@ export default class PriceSettingTable extends Vue {
         const newTotal = this.calculateTotal(updatedData);
 
         // 親コンポーネント（ManagementScreen）にデータの変更を通知
-        this.$emit("price-updated", updatedData, newTotal);
+        this.emitPriceUpdated(updatedData, newTotal);
+
+        // 計算結果も通知（現在のgetterを使用）
+        this.emitCalculationUpdated({
+            average: this.averagePrice,
+            max: this.maxPrice,
+            min: this.minPrice,
+            total: newTotal,
+        });
     }
 
     onRowAdded(newRow: PriceInfo) {
         console.log("新しい料金設定が追加されました:", newRow);
+        // @Emitデコレータを使用してイベントを発行
+        this.emitPriceAdded(newRow);
         // 合計金額の再計算をトリガー
         this.onDataUpdated([...this.priceInfo]);
     }
 
     onRowDeleted(deletedRow: PriceInfo) {
         console.log("料金設定が削除されました:", deletedRow);
+        // @Emitデコレータを使用してイベントを発行
+        this.emitPriceDeleted(deletedRow);
         // 合計金額の再計算をトリガー
         this.onDataUpdated(
             this.priceInfo.filter((item) => item.id !== deletedRow.id)
@@ -213,7 +260,7 @@ export default class PriceSettingTable extends Vue {
 
     onDataSaved(data: PriceInfo[]) {
         console.log("料金データが保存されました:", data);
-        this.$emit("data-saved", "料金設定を保存しました");
+        this.emitDataSaved("料金設定を保存しました");
     }
 }
 </script>

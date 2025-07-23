@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue, Watch } from "vue-property-decorator";
 
 export interface TableColumn {
     key: string;
@@ -145,13 +145,18 @@ export default class EditableTable extends Vue {
         return this.localData.length;
     }
 
+    @Emit("data-updated")
     updateCell(rowIndex: number, columnKey: string, value: string | number) {
         const updatedRow = { ...this.localData[rowIndex] };
         updatedRow[columnKey] = value;
-        this.localData.splice(rowIndex, 1, updatedRow);
-
+        // this.localData.splice(rowIndex, 1, updatedRow);
+        // this.localData[rowIndex] = updatedRow;
+        // this.data[rowIndex] = updatedRow; // 直接dataを更新
+        // this.data.splice(rowIndex, 1, updatedRow); // 直接dataを更新
+        this.data[0].priceA = Math.round(Math.random() * 1000); // デモ用にランダムな値を設定
         // 親コンポーネントに変更を通知
-        this.$emit("data-updated", [...this.localData]);
+        // this.$emit("data-updated", [...this.localData]);
+        // return [...this.localData]; // 変更後のデータを返す
     }
 
     handleTextInput(rowIndex: number, columnKey: string, event: Event) {

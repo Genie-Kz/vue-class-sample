@@ -25,7 +25,6 @@ export interface PriceInfo {
 export interface AppData {
     products: Product[];
     priceInfo: PriceInfo[];
-    totalAmount: number;
     lastUpdated: string;
 }
 

@@ -10,6 +10,8 @@
             <router-link to="/table-pattern-switcher"
                 >テーブル切り替え</router-link
             >
+            |
+            <router-link to="/check-table">チェックテーブル</router-link>
         </nav>
         <router-view />
     </div>

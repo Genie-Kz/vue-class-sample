@@ -43,6 +43,11 @@ const routes: Array<RouteConfig> = [
         name: "management",
         component: ManagementScreen,
     },
+    {
+        path: "/check-table",
+        name: "check-table",
+        component: () => import("../views/CheckTableView.vue"),
+    },
 ];
 
 const router = new VueRouter({

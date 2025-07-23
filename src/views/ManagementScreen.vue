@@ -30,7 +30,7 @@
             <section class="management-screen__section">
                 <PriceSettingTable
                     :price-info="appData.priceInfo"
-                    :total-amount="appData.totalAmount"
+                    :total-amount="totalAmount"
                     @price-updated="onPriceUpdated"
                     @data-saved="onDataSaved"
                 />
@@ -76,11 +76,16 @@
 import PriceSettingTable from "@/components/PriceSettingTable.vue";
 import ProductInfoTable from "@/components/ProductInfoTable.vue";
 import { AppData, PriceInfo, Product } from "@/types/management";
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
 interface OperationLog {
     timestamp: string;
     message: string;
+}
+
+interface ChangeInfo {
+    type: "products" | "price" | "reset" | "save";
+    data: Product[] | PriceInfo[] | AppData | string;
 }
 
 @Component({
@@ -123,12 +128,27 @@ export default class ManagementScreen extends Vue {
                 priceH: 4500,
             },
         ],
-        totalAmount: 1919810,
         lastUpdated: "",
     };
 
     operationLogs: OperationLog[] = [];
     originalData: AppData = {} as AppData;
+
+    get totalAmount(): number {
+        return this.appData.priceInfo.reduce((total, info) => {
+            return (
+                total +
+                info.priceA +
+                info.priceB +
+                info.priceC +
+                info.priceD +
+                info.priceE +
+                info.priceF +
+                info.priceG +
+                info.priceH
+            );
+        }, 0);
+    }
 
     mounted() {
         // 初期データのバックアップを作成
@@ -142,6 +162,49 @@ export default class ManagementScreen extends Vue {
         );
     }
 
+    // @Emitデコレータを使用したイベント発行メソッド
+    // これらのメソッドは自動的に対応するイベント名でイベントを発行します
+    // 例：emitDataChanged -> 'data-changed'イベントが発行される
+    @Emit("data-changed")
+    emitDataChanged(changeInfo: ChangeInfo) {
+        return changeInfo;
+    }
+
+    @Emit("data-saved")
+    emitDataSaved(message: string) {
+        return message;
+    }
+
+    @Emit("data-reset")
+    emitDataReset() {
+        return true;
+    }
+
+    @Emit("operation-logged")
+    emitOperationLogged(log: OperationLog) {
+        return log;
+    }
+
+    // @Emitデコレータを使用した宣言的なイベント発行メソッド
+    // メソッド名から自動的にイベント名が生成される（ケバブケース変換）
+    @Emit("status-changed")
+    onStatusChange() {
+        return {
+            hasChanges: this.hasChanges,
+            lastUpdated: this.appData.lastUpdated,
+        };
+    }
+
+    @Emit("products-count-changed")
+    onProductsCountChange(count: number) {
+        return count;
+    }
+
+    @Emit("total-amount-changed")
+    onTotalAmountChange(amount: number) {
+        return amount;
+    }
+
     // 子コンポーネント（ProductInfoTable）からのデータ更新
     onProductsUpdated(products: Product[]) {
         this.appData = {
@@ -149,6 +212,14 @@ export default class ManagementScreen extends Vue {
             products: [...products],
         };
         this.addLog(`製品情報が更新されました（${products.length}件）`);
+
+        // @Emitデコレータを使用してイベントを発行
+        this.emitDataChanged({
+            type: "products",
+            data: products,
+        });
+        this.onProductsCountChange(products.length);
+        this.onStatusChange();
     }
 
     // 子コンポーネント（PriceSettingTable）からの料金更新
@@ -156,17 +227,27 @@ export default class ManagementScreen extends Vue {
         this.appData = {
             ...this.appData,
             priceInfo: [...priceInfo],
-            totalAmount,
         };
         this.addLog(
             `料金情報が更新されました（合計: ¥${totalAmount.toLocaleString()}）`
         );
+
+        // @Emitデコレータを使用してイベントを発行
+        this.emitDataChanged({
+            type: "price",
+            data: priceInfo,
+        });
+        this.onTotalAmountChange(totalAmount);
+        this.onStatusChange();
     }
 
     // 子コンポーネントからの保存完了通知
     onDataSaved(message: string) {
         this.appData.lastUpdated = new Date().toLocaleString("ja-JP");
         this.addLog(`保存完了: ${message}`);
+
+        // @Emitデコレータを使用してイベントを発行
+        this.emitDataSaved(message);
     }
 
     // 全データの保存
@@ -178,6 +259,10 @@ export default class ManagementScreen extends Vue {
 
         // 保存完了をユーザーに通知
         alert("データを保存しました");
+
+        // @Emitデコレータを使用してイベントを発行
+        this.emitDataSaved("全てのデータを保存しました");
+        this.onStatusChange();
     }
 
     // データのリセット
@@ -185,6 +270,16 @@ export default class ManagementScreen extends Vue {
         if (confirm("変更内容を破棄してリセットしますか？")) {
             this.appData = JSON.parse(JSON.stringify(this.originalData));
             this.addLog("データをリセットしました");
+
+            // @Emitデコレータを使用してイベントを発行
+            this.emitDataReset();
+            this.emitDataChanged({
+                type: "reset",
+                data: this.appData,
+            });
+            this.onProductsCountChange(this.appData.products.length);
+            this.onTotalAmountChange(this.totalAmount);
+            this.onStatusChange();
         }
     }
 
@@ -200,6 +295,9 @@ export default class ManagementScreen extends Vue {
         if (this.operationLogs.length > 10) {
             this.operationLogs = this.operationLogs.slice(0, 10);
         }
+
+        // @Emitデコレータを使用してログイベントを発行
+        this.emitOperationLogged(log);
     }
 }
 </script>

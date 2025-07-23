@@ -15,7 +15,7 @@
 <script lang="ts">
 import EditableTable, { TableColumn } from "@/components/EditableTable.vue";
 import { Product } from "@/types/management";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 
 @Component({
     components: {
@@ -24,6 +24,37 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 })
 export default class ProductInfoTable extends Vue {
     @Prop({ required: true }) products!: Product[];
+
+    // @Emitデコレータを使用したイベント発行メソッド
+    // 親コンポーネントで @products-updated="handler" として受け取れる
+    @Emit("products-updated")
+    emitProductsUpdated(products: Product[]) {
+        return products;
+    }
+
+    // 親コンポーネントで @data-saved="handler" として受け取れる
+    @Emit("data-saved")
+    emitDataSaved(message: string) {
+        return message;
+    }
+
+    // 新しい製品追加イベント
+    @Emit("product-added")
+    emitProductAdded(product: Product) {
+        return product;
+    }
+
+    // 製品削除イベント
+    @Emit("product-deleted")
+    emitProductDeleted(product: Product) {
+        return product;
+    }
+
+    // 製品数変更イベント
+    @Emit("products-count-changed")
+    emitProductsCountChanged(count: number) {
+        return count;
+    }
 
     get columns(): TableColumn[] {
         return [
@@ -70,22 +101,27 @@ export default class ProductInfoTable extends Vue {
 
     onDataUpdated(updatedData: Product[]) {
         // 親コンポーネント（ManagementScreen）にデータの変更を通知
-        this.$emit("products-updated", updatedData);
+        this.emitProductsUpdated(updatedData);
+        this.emitProductsCountChanged(updatedData.length);
     }
 
     onRowAdded(newRow: Product) {
         console.log("新しい製品が追加されました:", newRow);
+        // @Emitデコレータを使用してイベントを発行
+        this.emitProductAdded(newRow);
         // 追加のロジックがあればここに記述
     }
 
     onRowDeleted(deletedRow: Product) {
         console.log("製品が削除されました:", deletedRow);
+        // @Emitデコレータを使用してイベントを発行
+        this.emitProductDeleted(deletedRow);
         // 削除のロジックがあればここに記述
     }
 
     onDataSaved(data: Product[]) {
         console.log("製品データが保存されました:", data);
-        this.$emit("data-saved", "製品情報を保存しました");
+        this.emitDataSaved("製品情報を保存しました");
     }
 }
 </script>
